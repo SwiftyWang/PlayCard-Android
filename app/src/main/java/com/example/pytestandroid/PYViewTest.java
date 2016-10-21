@@ -18,10 +18,9 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -33,7 +32,9 @@ public class PYViewTest extends FrameLayout implements IPYViewTest {
     private static final int DEFAULT_CARD_ANIMATION_DURATION = 300;
     private static final long DEFAULT_DEAL_CARD_INTERVAL = 250;
     private static final int MAX_OUT_CARD_NUMBER = 3;
-    private List<ImageView> cardViews = new ArrayList<ImageView>();
+    private static final String TAG = "PYViewTest";
+    private final byte[] defaultSort = new byte[]{66, 65, 50, 2, 18, 34, 49, 1, 17, 33, 61, 55, 7, 23, 39};
+    private List<ImageView> cardViews = new LinkedList<ImageView>();
     private IPYCtrlTest mCtrl = null;
     private FrameLayout my_card_container;
     private View outCard;
@@ -133,6 +134,23 @@ public class PYViewTest extends FrameLayout implements IPYViewTest {
         }
     }
 
+    private void addToContainer(int index, ImageView cardView) {
+        if (index >= my_card_container.getChildCount()) {
+            my_card_container.addView(cardView);
+        } else {
+            my_card_container.addView(cardView, index);
+        }
+        int marginLeft = index * CARD_MARGIN;
+        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
+        p.setMargins(marginLeft, p.topMargin, p.rightMargin, p.bottomMargin);
+        cardView.requestLayout();
+        for (int i = my_card_container.getChildCount() - 1; i > index; i--) {
+            ViewGroup.MarginLayoutParams mp = (MarginLayoutParams) my_card_container.getChildAt(i).getLayoutParams();
+            mp.setMargins(mp.leftMargin + CARD_MARGIN, mp.topMargin, mp.rightMargin, mp.bottomMargin);
+            my_card_container.getChildAt(i).requestLayout();
+        }
+    }
+
     private void addToContainer(ImageView cardView) {
         my_card_container.addView(cardView);
         int marginLeft = my_card_container.getChildCount() * CARD_MARGIN;
@@ -191,6 +209,24 @@ public class PYViewTest extends FrameLayout implements IPYViewTest {
         cardView.startAnimation(animationSet);
     }
 
+    private int findSortIndexInList(Byte value) {
+        for (int i = 0; i < cardViews.size(); i++) {
+            if (getPosInDefaultSort((Byte) cardViews.get(i).getTag()) > getPosInDefaultSort(value)) {
+                return i;
+            }
+        }
+        return cardViews.size();
+    }
+
+    private int findValueIndex(byte b) {
+        for (int i = 0; i < cardViews.size(); i++) {
+            if (((Byte) cardViews.get(i).getTag()).intValue() == b) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private void generateCardViews(byte[] cards) {
         new AsyncTask<Byte[], Byte, Boolean>() {
             Byte[] bytes;
@@ -221,13 +257,25 @@ public class PYViewTest extends FrameLayout implements IPYViewTest {
                     cardView.setImageBitmap(BitmapFactory.decodeStream(getContext().getAssets().open(fileName)));
                     cardView.setLayoutParams(new FrameLayout.LayoutParams(CARD_WIDTH, CARD_HEIGHT));
                     cardView.setTag(card);
-                    cardViews.add(cardView);
-                    addToContainer(cardView);
+                    int index = findSortIndexInList(card);
+                    cardViews.add(index, cardView);
+                    Log.e(TAG, index + " " + "K:" + findValueIndex((byte) 61) + "red7:" + findValueIndex((byte) 39));
+                    addToContainer(index, cardView);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }.execute(Util.convert(cards));
+    }
+
+    private int getPosInDefaultSort(Byte value) {
+        for (int i = 0; i < defaultSort.length; i++) {
+            if (defaultSort[i] == value.intValue()) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private byte[] getRandomCardsTag() {
