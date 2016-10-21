@@ -259,7 +259,7 @@ public class PYViewTest extends FrameLayout implements IPYViewTest {
                     cardView.setTag(card);
                     int index = findSortIndexInList(card);
                     cardViews.add(index, cardView);
-                    Log.e(TAG, index + " " + "K:" + findValueIndex((byte) 61) + "red7:" + findValueIndex((byte) 39));
+                    //Log.e(TAG, index + " " + "K:" + findValueIndex((byte) 61) + "red7:" + findValueIndex((byte) 39));
                     addToContainer(index, cardView);
 
                 } catch (IOException e) {
