@@ -26,9 +26,9 @@ import java.util.Random;
 
 public class PYViewTest extends FrameLayout implements IPYViewTest {
 
-    private static final int CARD_HEIGHT = 270;
-    private static final int CARD_MARGIN = 60;
-    private static final int CARD_WIDTH = 200;
+    private final int CARD_HEIGHT = getResources().getDimensionPixelSize(R.dimen.CARD_HEIGHT);
+    private final int CARD_MARGIN = getResources().getDimensionPixelSize(R.dimen.CARD_MARGIN);
+    private final int CARD_WIDTH = getResources().getDimensionPixelSize(R.dimen.CARD_WIDTH);
     private static final int DEFAULT_CARD_ANIMATION_DURATION = 300;
     private static final long DEFAULT_DEAL_CARD_INTERVAL = 250;
     private static final int MAX_OUT_CARD_NUMBER = 3;
@@ -123,8 +123,8 @@ public class PYViewTest extends FrameLayout implements IPYViewTest {
             Animation animation = new TranslateAnimation(
                     Animation.RELATIVE_TO_PARENT, -1.0f,
                     Animation.RELATIVE_TO_PARENT, 1.0f,
-                    Animation.RELATIVE_TO_PARENT, -1.0f,
-                    Animation.RELATIVE_TO_PARENT, -1.0f);
+                    Animation.RELATIVE_TO_PARENT, -1.5f,
+                    Animation.RELATIVE_TO_PARENT, -1.5f);
             animation.setDuration(2000);
             animation.setFillAfter(true);
             animation.setInterpolator(new LinearInterpolator());
@@ -169,7 +169,7 @@ public class PYViewTest extends FrameLayout implements IPYViewTest {
         TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
                 Animation.ABSOLUTE, Util.getScreenWidth((Activity) getContext()) / 3,
                 Animation.RELATIVE_TO_SELF, 0,
-                Animation.ABSOLUTE, -Util.getScreenHeight((Activity) getContext()) / 2);
+                Animation.ABSOLUTE, -((int) (cardView.getHeight() * 1.3) + findViewById(R.id.view_controller).getHeight()));
         anim.setFillAfter(true);
         anim.setDuration(DEFAULT_CARD_ANIMATION_DURATION);
         anim.setInterpolator(new LinearInterpolator());

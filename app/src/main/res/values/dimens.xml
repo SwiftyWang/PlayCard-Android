@@ -3,4 +3,7 @@
     <dimen name="small_padding">5dp</dimen>
     <dimen name="large_padding">20dp</dimen>
     <dimen name="middle_padding">10dp</dimen>
+    <dimen name="CARD_HEIGHT">90dp</dimen>
+    <dimen name="CARD_MARGIN">20dp</dimen>
+    <dimen name="CARD_WIDTH">66dp</dimen>
 </resources>
